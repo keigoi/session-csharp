@@ -106,6 +106,15 @@ namespace SessionTypesDemos
 			var c1 = client.Send(dividend);
 			Console.WriteLine($"Client Sent: {divisor}");
 			var c2 = c1.Send(divisor);
+
+			switch (c2.Follow())
+			{
+				case Left<Respond<int, Close>, Respond<string, Close>> left:
+					break;
+				case Right<Respond<int, Close>, Respond<string, Close>> right:
+					break;
+			}
+
 			await c2.FollowAsync(
 				async left =>
 				{

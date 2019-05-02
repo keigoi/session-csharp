@@ -197,6 +197,14 @@ namespace SessionTypes.Binary
 			return new Server<R, P>(server);
 		}
 
+		public static Choice<L, R> Follow<L, R, P>(this Client<RespondChoice<L, R>, P> client) where L : SessionType where R : SessionType where P : SessionType 
+		{
+
+			return new Left<L, R>();
+			
+
+		}
+
 		public static void Follow<L, R, P>(this Client<RespondChoice<L, R>, P> client, Action<Client<L, P>> leftAction, Action<Client<R, P>> rightAction) where L : SessionType where R : SessionType where P : SessionType
 		{
 			switch (client.Follow())
