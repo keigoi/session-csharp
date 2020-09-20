@@ -8,6 +8,15 @@ namespace SessionTest
 	using static Session.ProtocolCombinators;
 	using static Session.Communication;
 
+	public class PingPong : Dual<Send<int, Recv<int, Cli<PingPong>>>, Recv<int, Send<int, Srv<PingPong>>>>
+	{
+		public PingPong() : base( Send(Val<int>, Recv(Val<int>, Recur<PingPong, Send<int, Recv<int, Cli<PingPong>>>, Recv<int, Send<int, Srv<PingPong>>>>(new PingPong()))) )
+		{
+
+		}
+	}
+
+
 	public class Main
 	{
 		public static void Test()
@@ -24,10 +33,11 @@ namespace SessionTest
 
 			// protocol with branching and recursion
 			{
-				var p2 = Arrange(Send(Val<int>, Recv(Val<string>, Goto1)), Send(Val<string>, Offer(Recv(Val<int>, Eps), Eps)));
+				var p2 =
+					Send(Val<int>, Recv(Val<string>, Send(Val<string>, Offer(Recv(Val<int>, Eps), Eps))));
 
 				var cliCh = p2.ForkThread(srvCh => {
-					var srvCh2 = srvCh.Receive(out int v).Send(v.ToString()).Goto1().Receive(out string str);
+					var srvCh2 = srvCh.Receive(out int v).Send(v.ToString()).Receive(out string str);
 					if (int.TryParse(str, out int i))
 					{
 						srvCh2.SelectLeft().Send(i).Close();
@@ -38,12 +48,12 @@ namespace SessionTest
 					}
 				});
 
-				cliCh.Send(100).Receive(out string str2).Goto1().Send("100")
-					.Offer(left => {
-						return left.Receive(out int i);
-					}, right => {
-						return right;
-					}).Close();
+				cliCh.Send(100).Receive(out string str2).Send("100")
+					.Offer(left: cliCh3 => {
+						cliCh3.Receive(out int i).Close();
+					}, right: cliCh3 => {
+						cliCh3.Close();
+					});
 
 			}
 

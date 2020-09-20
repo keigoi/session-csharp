@@ -11,35 +11,7 @@ namespace Session
 			public static Unit unit = new Unit();
 		}
 
-		public class Protocol
-		{ }
-		public class SessionType : Protocol
-		{ }
-		public class SessionEnv : Protocol
-		{ }
-
-		/// <summary>
-		/// A utility class for SessionList<S0,..> which let pick the first out of the list.
-		/// Will be removed -- this was only for the sake of ForkThread, which doesn't work in this way.
-		/// </summary>
-		public class EnvHead<S0> : SessionEnv
-			where S0 : SessionType
-		{ }
-
-		public class Env<S0, S1> : EnvHead<S0>
-			where S0 : SessionType
-			where S1 : SessionType
-		{ }
-		public class Env<S0, S1, S2> : EnvHead<S0>
-			where S0 : SessionType
-			where S1 : SessionType
-			where S2 : SessionType
-		{ }
-		public class Env<S0, S1, S2, S3> : EnvHead<S0>
-			where S0 : SessionType
-			where S1 : SessionType
-			where S2 : SessionType
-			where S3 : SessionType
+		public interface SessionType
 		{ }
 
 		public class Send<V, S> : SessionType { }
@@ -68,11 +40,16 @@ namespace Session
 		public class Dual<S, T>
 			where S : SessionType
 			where T : SessionType
-		{ }
-		public class DualEnv<S, T>
-			where S : SessionEnv
-			where T : SessionEnv
-		{ }
+		{
+			public Dual(Dual<S, T> copy) { }
+
+			internal Dual()
+			{
+			}
+		}
+
+		public interface Cli<out D> : SessionType { }
+		public interface Srv<out D> : SessionType { }
 
 		public class Val<V> { }
 
