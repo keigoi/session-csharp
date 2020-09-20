@@ -91,10 +91,7 @@ namespace Session
 		{ throw new NotImplementedException(); }
 
 
-		public static Dual<Cli<D>, Srv<D>> Recur<D, S, T>(Dual<S, T> recur)
-			where D : Dual<S,T>
-			where S : SessionType
-			where T : SessionType
+		public static Dual<Cli<D>, Srv<D>> Recur<D>(D recur)
 		{
 			throw new NotImplementedException();
 		}
