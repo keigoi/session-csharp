@@ -8,14 +8,6 @@ namespace SessionTest
 	using static Session.ProtocolCombinators;
 	using static Session.Communication;
 
-	public class PingPong : Dual<Send<int, Recv<int, Cli<PingPong>>>, Recv<int, Send<int, Srv<PingPong>>>>
-	{
-		public PingPong() : base( Send(Val<int>, Recv(Val<int>, Recur<PingPong, Send<int, Recv<int, Cli<PingPong>>>, Recv<int, Send<int, Srv<PingPong>>>>(new PingPong()))) )
-		{
-
-		}
-	}
-
 
 	public class Main
 	{
